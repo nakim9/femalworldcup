@@ -27,7 +27,7 @@ JOUEUSE creerJoueuse(char * nom, char * prenom, unsigned char numero, char * pos
   return joueuse;
 }
 
-EQUIPE  creerEquipe (char * nom, continent continent, char * selectionneur, ETOILE * etoile, unsigned char fifa, JOUEUSE * equipe){
+EQUIPE  creerEquipe (char * nom, char *  continent, char * selectionneur, ETOILE * etoile, unsigned char fifa, JOUEUSE * equipe){
   EQUIPE * equipe = NULL;
   equipe = malloc(sizeof(EQUIPE));
   if(equipe == NULL) return NULL;
@@ -94,4 +94,36 @@ JOUEUSE saisirJoueuse (void){
 
   retrun joueuse;
 }
-EQUIPE  saisirEquipe  (void);
+
+EQUIPE  saisirEquipe  (void){
+    char buf nom[32];
+    char continent[32];
+    char selectionneur[32];
+    unsigned char nbetoile;
+    ETOILE * etoile;
+    unsigned char fifa;
+    JOUEUSE * equipe;
+    char buf[32];
+
+    puts("Nom de l'équipe : ");
+    scanf("%s\n", buf);
+    strcpy(nom,buf);
+
+    puts("Continent : ");
+    scanf("%s\n", buf);
+    strcpy(continent,buf);
+
+    puts("Quel est le score FIFA ? : ");
+    scanf("%s\n", buf);
+    atoi(fifa,buf);
+
+    puts("Combien de coupe du monde as t elle gagnée ? : ");
+    scanf("%s\n", buf);
+    atoi(nbetoile,buf);
+
+    for (unsigned char i = 0; i < nbetoile; i++) {
+      saisirEtoile();
+    }
+
+    puts("Veuillez inserez les joueuses : \n");
+}

@@ -1,4 +1,3 @@
-enum continent {AMERIQUE NORD, AMERIQUE SUD, EUROPE, AFRIQUE, ASIE, OCEANIE, ANTARTIQUE};
 
 typedef struct etoile{
   unsigned short annee;
@@ -17,7 +16,7 @@ typedef struct joueuse{
 
 typedef struct equipe{
   char * nom;
-  continent continent;
+  char * continent;
   char * selectionneur;
   ETOILE * etoile;
   unsigned char fifa;
@@ -26,10 +25,12 @@ typedef struct equipe{
 
 ETOILE  creerEtoile (unsigned short annee, ETOILE * suivant);
 JOUEUSE creerJoueuse(char * nom, char * prenom, unsigned char numero, char * position, unsigned char titulaire, JOUEUSE * suivant);
-EQUIPE  creerEquipe (char * nom, continent continent, char * selectionneur, ETOILE * etoile, unsigned char fifa, JOUEUSE * equipe);
+EQUIPE  creerEquipe (char * nom, char * continent, char * selectionneur, ETOILE * etoile, unsigned char fifa, JOUEUSE * equipe);
 
 ETOILE  saisirEtoile  (void);
 JOUEUSE saisirJoueuse (void);
 EQUIPE  saisirEquipe  (void);
 
+int ajouterEtoile(ETOILE * etoile, EQUIPE * equipe);
 int ajouterJoueuse(JOUEUSE * joueuse, EQUIPE * equipe);
+int ajouterEquipe(EQUIPE * equipe, EQUIPE tete);

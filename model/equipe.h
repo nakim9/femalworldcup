@@ -1,36 +1,30 @@
+#ifndef EQUIPE_H
+#define EQUIPE_H
 
-typedef struct etoile{
-  unsigned short annee;
-  struct etoile * suivant;
-}ETOILE;
-
-typedef struct joueuse{
-  char * nom;
-  char * prenom;
-  unsigned char numero;
-  char * position;
-  unsigned char selection;
-  unsigned char titulaire;
-  struct joueuse * suivant;
-}JOUEUSE;
+#include "etoile.h"
+#include "joueuse.h"
 
 typedef struct equipe{
   char * nom;
   char * continent;
   char * selectionneur;
   ETOILE * etoile;
-  unsigned char fifa;
+  unsigned short fifa;
+  unsigned char nbjoueuse;
   JOUEUSE * joueuse;
+  struct equipe * suivant;
 }EQUIPE;
 
-ETOILE  creerEtoile (unsigned short annee, ETOILE * suivant);
-JOUEUSE creerJoueuse(char * nom, char * prenom, unsigned char numero, char * position, unsigned char titulaire, JOUEUSE * suivant);
-EQUIPE  creerEquipe (char * nom, char * continent, char * selectionneur, ETOILE * etoile, unsigned char fifa, JOUEUSE * equipe);
 
-ETOILE  saisirEtoile  (void);
-JOUEUSE saisirJoueuse (void);
-EQUIPE  saisirEquipe  (void);
+EQUIPE * creerEquipe  (char * nom, char * continent, char * selectionneur, ETOILE * etoile, unsigned short fifa, JOUEUSE * equipe);
+EQUIPE * saisirEquipe (void);
+/* Insertion par classement fifa */
+EQUIPE * ajouterEquipe(EQUIPE * tete, EQUIPE * new);
+JOUEUSE * ajouterJoueuse(JOUEUSE * joueuse, EQUIPE * equipe);
+ETOILE * ajouterEtoile(ETOILE * etoile, EQUIPE * equipe);
 
-int ajouterEtoile(ETOILE * etoile, EQUIPE * equipe);
-int ajouterJoueuse(JOUEUSE * joueuse, EQUIPE * equipe);
-int ajouterEquipe(EQUIPE * equipe, EQUIPE tete);
+EQUIPE * ajouterEquipeDebut (EQUIPE * tete, EQUIPE * new);
+EQUIPE * ajouterEquipeFin   (EQUIPE * tete, EQUIPE * new);
+EQUIPE * ajouterEquipeEntre (EQUIPE * tete, EQUIPE * new);
+
+#endif

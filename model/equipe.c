@@ -20,28 +20,32 @@ EQUIPE * creerEquipe  (char * nom, char * continent, char * selectionneur, ETOIL
 }
 
 EQUIPE * saisirEquipe  (void){
-    char nom[32];
-    char continent[32];
-    char selectionneur[32];
+    char * nom = malloc(sizeof(char)*32);
+    char * continent = malloc(sizeof(char)*32);
+    char * selectionneur = malloc(sizeof(char)*32);
     unsigned char nbetoile;
     unsigned short fifa;
     unsigned char nbJoueuse;
     char buf[32];
 
-    puts("Nom de l'équipe : ");
-    scanf("%s\n", buf);
+    printf("Nom de l'équipe : ");
+    scanf("%s", buf);
     strcpy(nom,buf);
 
-    puts("Continent : ");
-    scanf("%s\n", buf);
+    printf("Continent : ");
+    scanf("%s", buf);
     strcpy(continent,buf);
 
-    puts("Quel est le score FIFA ? : ");
-    scanf("%s\n", buf);
+    printf("Nom du selectionneur : ");
+    scanf("%s", buf);
+    strcpy(selectionneur,buf);
+
+    printf("Quel est le score FIFA ? : ");
+    scanf("%s", buf);
     fifa = atoi(buf);
 
-    puts("Combien de coupe du monde as t elle gagnée ? : ");
-    scanf("%s\n", buf);
+    printf("Combien de coupe du monde as t elle gagnée ? : ");
+    scanf("%s", buf);
     nbetoile = atoi(buf);
 
     EQUIPE * equipe = creerEquipe(nom,continent,selectionneur,NULL,fifa,NULL);
@@ -50,11 +54,11 @@ EQUIPE * saisirEquipe  (void){
       ajouterEtoile(saisirEtoile(),equipe);
     }
 
-    puts("Combien de joueuse il y a-t-il dans cette equipe ? : ");
-    scanf("%s\n", buf);
+    printf("Combien de joueuse il y a-t-il dans cette equipe ? : ");
+    scanf("%s", buf);
     nbJoueuse = atoi(buf);
 
-    puts("Veuillez inserez les joueuses : \n");
+    printf("Veuillez inserez les joueuses : \n");
     for (unsigned char i = 0; i < nbJoueuse; i++) {
       ajouterJoueuse(saisirJoueuse(), equipe);
     }
@@ -93,6 +97,11 @@ ETOILE * ajouterEtoile(ETOILE * etoile, EQUIPE * equipe){
 
           tete = ajouterEtoileDebut(precedant,etoile); //cas où l'étoile entrée est plus ancienne que toutes les autres
         }
+
+        if(courant->annee > etoile->annee){
+          precedant = ajouterEtoileEntre(precedant,etoile); //cas où l'étoile entrée est plus ancienne que toutes les autres
+        }
+
         else{
           if(courant->suivant == NULL){
             courant = ajouterEtoileFin(courant,etoile); //cas où l'étoile est plus récente que toutes les autres
@@ -137,6 +146,11 @@ JOUEUSE * ajouterJoueuse(JOUEUSE * joueuse, EQUIPE * equipe){
       if(precedant->numero > joueuse->numero){
         tete = ajouterJoueuseDebut(precedant,joueuse); //cas où la position entrée est plus grande à toutes les autres
       }
+
+      if(courant->numero > joueuse->numero){
+        precedant = ajouterJoueuseEntre(precedant,joueuse); //cas où la position entrée est plus grande à toutes les autres
+      }
+
       else{
         if(courant->suivant == NULL){
           courant = ajouterJoueuseFin(courant,joueuse); //cas où la position est plus petite que toutes les autres
@@ -152,7 +166,25 @@ JOUEUSE * ajouterJoueuse(JOUEUSE * joueuse, EQUIPE * equipe){
   return tete;
 }
 
-EQUIPE * ajouterEquipe(EQUIPE * tete, EQUIPE * new){
+EQUIPE * trierEquipeFIFA  (EQUIPE * tete){
+  if(tete != NULL && tete->suivant != NULL){
+    EQUIPE * precedant = tete;
+    EQUIPE * courant = tete->suivant;
+
+    while(courant != NULL){
+      if(precedant->fifa < courant->fifa){
+        precedant->suivant = courant->suivant;
+        courant->suivant = NULL;
+        tete = ajouterEquipeFIFA(tete,courant);
+        courant = tete;
+      }
+      courant = courant->suivant;
+    }
+  }
+  return tete;
+}
+
+EQUIPE * ajouterEquipeFIFA  (EQUIPE * tete, EQUIPE * new){
   if(tete == NULL){
     tete = new;
   }
@@ -178,6 +210,10 @@ EQUIPE * ajouterEquipe(EQUIPE * tete, EQUIPE * new){
       if(precedant->fifa < new->fifa){
         tete = ajouterEquipeDebut(precedant,new);
       }
+
+      if(courant->fifa < new->fifa){
+        precedant = ajouterEquipeEntre(precedant,new);
+      }
       else{
         if(courant->suivant == NULL){
           courant = ajouterEquipeFin(courant,new);
@@ -189,6 +225,99 @@ EQUIPE * ajouterEquipe(EQUIPE * tete, EQUIPE * new){
     }
   }
   return tete;
+}
+
+EQUIPE * trierEquipeEtoile  (EQUIPE * tete){
+  if(tete != NULL && tete->suivant != NULL){//Si la liste est vide ou contient qu'un élément on cosidère qu'elle est triée
+    EQUIPE * precedant = tete;
+    EQUIPE * courant = tete->suivant;
+    //Lo'bjectif est de replacer dans la liste les éléments non triés en les enlevant et en les remplacants à l'aide de la fonction ajout
+    while(courant != NULL){
+      if(countEtoile(precedant->etoile) < countEtoile(courant->etoile)){//Si le nombre d'étoile n'est pas cohérent avec l'ordre
+        precedant->suivant = courant->suivant; //On dissocie l'élément que l'on veut trier de la liste
+        courant->suivant = NULL;
+        tete = ajouterEquipeEtoile(tete,courant); //On ajoute l'élément en prenant en compte l'ordre désiré
+        courant = tete; //On repart du début
+      }
+      courant = courant->suivant;
+    } // On quitte uniquement si la liste est triée
+  }
+  return tete;
+}
+
+EQUIPE * ajouterEquipeEtoile (EQUIPE * tete, EQUIPE * new){
+  if(tete == NULL){
+    tete = new;
+  }
+  else{
+    EQUIPE * precedant = tete;
+    EQUIPE * courant = tete->suivant;
+
+    if(courant == NULL){ //true quand il n'y a qu'un element dans la liste tete
+      if(countEtoile(precedant->etoile) > countEtoile(new->etoile)){
+        tete = ajouterEquipeFin(precedant,new);
+      }
+      else{
+        tete = ajouterEquipeDebut(precedant,new);
+      }
+    }
+
+    else{//cas où il y a 2 elem ou plus
+      while(courant->suivant != NULL && countEtoile(courant->etoile) > countEtoile(new->etoile)){
+        precedant = courant;
+        courant = courant->suivant;
+      }
+
+      if(countEtoile(precedant->etoile) < countEtoile(new->etoile)){
+        tete = ajouterEquipeDebut(precedant,new);
+      }
+
+      if(countEtoile(courant->etoile) < countEtoile(new->etoile)){
+        precedant = ajouterEquipeEntre(precedant,new);
+      }
+      else{
+        if(courant->suivant == NULL){
+          courant = ajouterEquipeFin(courant,new);
+        }
+        else{
+          courant = ajouterEquipeEntre(courant, new);
+        }
+      }
+    }
+  }
+  return tete;
+}
+
+JOUEUSE * classementJoueuseSelection(EQUIPE * tete){
+  JOUEUSE * joueuses = NULL;
+  EQUIPE * equipeCourant = tete;
+  JOUEUSE * joueuseCourant = NULL;
+  while (equipeCourant != NULL) {
+    joueuseCourant = equipeCourant->joueuse;
+    while (joueuseCourant != NULL) {
+      joueuses = ajouterJoueuseSelection(joueuses,copieJoueuse(joueuseCourant));
+      joueuseCourant = joueuseCourant->suivant;
+    }
+    equipeCourant = equipeCourant->suivant;
+  }
+
+  return joueuses;
+}
+
+unsigned char statistique(EQUIPE * equipe1, EQUIPE * equipe2){
+  switch (abs((int) (equipe1->fifa-equipe2->fifa))%5) {
+    case 0:
+    return 50;
+
+    case 1:
+    return 60;
+
+    case 2:
+    return 75;
+
+    default:
+    return 90;
+  }
 }
 
 EQUIPE * ajouterEquipeDebut (EQUIPE * tete, EQUIPE * new){

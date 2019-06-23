@@ -84,7 +84,7 @@ EQUIPE * load(char * nomFic){
     for (unsigned char i = 0; i < nbEtoileToRead; i++) {
       ajouterEtoile(readEtoile(file),courant);
     }
-    result = ajouterEquipe(result,courant);
+    result = ajouterEquipeFIFA(result,courant);
     courant = NULL;
     fgetc(file);
   }

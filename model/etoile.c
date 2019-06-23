@@ -19,7 +19,7 @@ ETOILE * saisirEtoile  (void){
   puts("Saisir l'année de l'étoile : ");
   char buf[5];
   unsigned short annee;
-  scanf("%s\n", buf);
+  scanf("%s", buf);
   annee = atoi(buf);
 
   ETOILE * etoile = NULL;
@@ -27,6 +27,20 @@ ETOILE * saisirEtoile  (void){
 
   return etoile; //etoile peut être NULL;
 }
+
+unsigned char countEtoile(ETOILE * etoile){
+  unsigned char count = 0;
+
+  ETOILE * courant = etoile;
+
+  while (courant != NULL) {
+    count++;
+    courant = courant->suivant;
+  }
+
+  return count;
+}
+
 
 ETOILE * ajouterEtoileDebut(ETOILE * tete, ETOILE * new){
   if(new == NULL) return tete;
@@ -36,7 +50,6 @@ ETOILE * ajouterEtoileDebut(ETOILE * tete, ETOILE * new){
 
   return new;
 }
-
 ETOILE * ajouterEtoileFin(ETOILE * tete, ETOILE * new){
   if(new == NULL) return tete;
   if(tete == NULL) return new;
@@ -61,17 +74,4 @@ ETOILE * ajouterEtoileEntre(ETOILE * tete, ETOILE * new){
   new->suivant = suivant;
 
   return tete;
-}
-
-unsigned char countEtoile(ETOILE * etoile){
-  unsigned char count = 0;
-
-  ETOILE * courant = etoile;
-
-  while (courant != NULL) {
-    count++;
-    courant = courant->suivant;
-  }
-
-  return count;
 }

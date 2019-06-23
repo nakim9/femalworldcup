@@ -14,42 +14,43 @@ JOUEUSE * creerJoueuse(char * nom, char * prenom, unsigned char numero,  char * 
   joueuse->position = position;
   joueuse->selection = selection;
   joueuse->titulaire = titulaire;
+  joueuse->suivant = NULL;
 
   return joueuse;
 }
 
 JOUEUSE * saisirJoueuse (void){
   char buf[32];
-  char nom[32];
-  char prenom[32];
+  char * nom = malloc(sizeof(char)*32);
+  char * prenom = malloc(sizeof(char)*32);
   unsigned char numero;
-  char position[32];
+  char * position = malloc(sizeof(char)*32);
   unsigned char selection;
   unsigned char titulaire;
 
-  puts("Saisir : \n");
-  puts("Nom de la joueuse : ");
-  scanf("%s\n", buf);
-  strcpy(nom,buf);
+  puts("\nSaisir :");
+  printf("Nom de la joueuse : ");
+  scanf("%s", buf);
+  strncpy(nom,buf,32);
 
-  puts("Prénom de la joueuse : ");
-  scanf("%s\n", buf);
+  printf("Prénom de la joueuse : ");
+  scanf("%s", buf);
   strcpy(prenom,buf);
 
-  puts("Numéro de maillot : ");
-  scanf("%s\n", buf);
+  printf("Numéro de maillot : ");
+  scanf("%s", buf);
   numero = atoi(buf);
 
-  puts("Position sur le terrain : ");
-  scanf("%s\n", buf);
+  printf("Position sur le terrain : ");
+  scanf("%s", buf);
   strcpy(position,buf);
 
-  puts("Combien de fois cette joueuse a été selectionnée ? : ");
-  scanf("%s\n", buf);
+  printf("Combien de fois cette joueuse a été selectionnée ? : ");
+  scanf("%s", buf);
   selection = atoi(buf);
 
-  puts("Est-elle titulaire ? (o/n) : ");
-  scanf("%s\n", buf);
+  printf("Est-elle titulaire ? (o/n) : ");
+  scanf("%s", buf);
   if(strcmp(buf,"o") == 0){
     titulaire = 1;//elle est titulaire
   }
@@ -64,6 +65,51 @@ JOUEUSE * saisirJoueuse (void){
   return joueuse;
 }
 
+JOUEUSE * copieJoueuse(JOUEUSE * joueuse){
+  return creerJoueuse(joueuse->nom,joueuse->prenom,joueuse->numero,joueuse->position,joueuse->selection,joueuse->titulaire);
+}
+
+JOUEUSE * ajouterJoueuseSelection(JOUEUSE * tete, JOUEUSE * new){
+  if(tete == NULL){
+    tete = new;
+  }
+  else{
+    JOUEUSE * precedant = tete;
+    JOUEUSE * courant = tete->suivant;
+
+    if(courant == NULL){ //true quand il n'y a qu'un element dans la liste tete
+      if(precedant->selection > new->selection){
+        tete = ajouterJoueuseFin(precedant,new);
+      }
+      else{
+        tete = ajouterJoueuseDebut(precedant,new);
+      }
+    }
+
+    else{//cas où il y a 2 elem ou plus
+      while(courant->suivant != NULL && courant->selection > new->selection){
+        precedant = courant;
+        courant = courant->suivant;
+      }
+
+      if(precedant->selection < new->selection){
+        tete = ajouterJoueuseDebut(precedant,new);
+      }
+      if(courant->selection < new->selection){
+        courant = ajouterJoueuseEntre(precedant,new);
+      }
+      else{
+        if(courant->suivant == NULL){
+          courant = ajouterJoueuseFin(courant,new);
+        }
+        else{
+          courant = ajouterJoueuseEntre(precedant, new);
+        }
+      }
+    }
+  }
+  return tete;
+}
 
 JOUEUSE * ajouterJoueuseDebut(JOUEUSE * tete, JOUEUSE * new){
   if(new == NULL) return tete;

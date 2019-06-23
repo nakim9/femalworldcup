@@ -41,6 +41,37 @@ void  afficheJoueuse (JOUEUSE * joueuse){
   printf("\n");
 }
 
+void  afficheJoueuseParEquipe (JOUEUSE * joueuse, char * nomequipe){
+  printf("%s %s %hhu (%s)\n", joueuse->nom, joueuse->prenom, joueuse->numero, nomequipe);
+  printf("Poste : %s\n", joueuse->position);
+  printf("Elle a été séléctionnée %hhu fois\n", joueuse->selection);
+  if (joueuse->titulaire > 0) {
+    puts("Elle est titulaire !");
+  }
+  else{
+    puts("Elle n'est pas titulaire");
+  }
+  printf("\n");
+}
+
+void afficheListeJoueuseEquipe(JOUEUSE * joueuse, EQUIPE * tete){
+  JOUEUSE * jcourant = joueuse;
+  JOUEUSE * jequipe = NULL;
+  EQUIPE * ecourant = NULL;
+  while(jcourant != NULL){
+    ecourant = tete;
+    while(ecourant != NULL){
+      jequipe = ecourant->joueuse;
+      while(jequipe != NULL ){
+        if(strcmp(jcourant->nom,jequipe->nom)==0 && strcmp(jcourant->prenom,jequipe->prenom)==0) afficheJoueuseParEquipe(jcourant,ecourant->nom);
+        jequipe = jequipe->suivant;
+      }
+      ecourant = ecourant->suivant;
+    }
+    jcourant = jcourant->suivant;
+  }
+}
+
 void  afficheListeJoueuse (JOUEUSE * joueuse){
   if(joueuse == NULL){
     puts("Cette equipe n'a pas de joueuse");
@@ -67,6 +98,22 @@ void  afficheListeEquipe  (EQUIPE * equipe){
   EQUIPE * courant = equipe;
   while (courant != NULL) {
     afficheEquipe(courant);
+    if(courant->suivant != NULL) puts("|--------------------------------------------|\n");
+    courant = courant->suivant;
+  }
+  printf("\n");
+}
+
+void  afficheEquipeStrict  (EQUIPE * equipe){
+  printf("%s (%s)\n", equipe->nom, equipe->continent);
+  printf("%s\n", equipe->selectionneur);
+  printf("Score FIFA : %hu\n", equipe->fifa);
+}
+
+void  afficheListeEquipeStrict  (EQUIPE * equipe){
+  EQUIPE * courant = equipe;
+  while (courant != NULL) {
+    afficheEquipeStrict(courant);
     if(courant->suivant != NULL) puts("|--------------------------------------------|\n");
     courant = courant->suivant;
   }
